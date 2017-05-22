@@ -27,16 +27,16 @@ class BooksController < ApplicationController
     # Find elements matching 'Item' in response object
     res.items.each do |item|
       puts item_attributes = item.get_element('ItemAttributes')
-      p item_attributes.get('Title')
-      p item_attributes.get('Author')
-      p item_attributes.get('ISBN')
+      @amazon = {}
+      @amazon['title'] = item_attributes.get('Title')
+      @amazon['author'] = item_attributes.get('Author')
+      @amazon['isbn'] = item_attributes.get('ISBN')
 
       # Return a hash object with the element names as the keys
-      p item.get_hash('SmallImage') # {:url => ..., :width => ..., :height => ...}
+      @amazon['image'] = item.get_hash('SmallImage') # {:url => ..., :width => ..., :height => ...}
 
       break
     end
-    @book
   end
 
   # GET /books/new
