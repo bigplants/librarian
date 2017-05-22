@@ -17,45 +17,25 @@ class BooksController < ApplicationController
       options[:AWS_secret_key] = 'sHYFyuZvugwj862Ej/PtFgtEPXKddiOh/mRNRjx+'
       options[:associate_tag] = 'brahman-20'
     end
-    res = Amazon::Ecs.item_search(@book.title, {:response_group => 'Medium', :sort => 'salesrank'})
+    res = Amazon::Ecs.item_search(@book.title, {
+        :search_index => 'Books',
+        :item_page => 1,
+        :response_group => 'Medium,ItemAttributes,Images',
+        :country => 'jp'
+    })
 
     # Find elements matching 'Item' in response object
     res.items.each do |item|
-      # Retrieve string value using XML path
-      item.get('ASIN')
-      item.get('ItemAttributes/Title')
-
-      # Return Amazon::Element instance
-      item_attributes = item.get_element('ItemAttributes')
-      item_attributes.get('Title')
-
-      item_attributes.get_unescaped('Title') # unescape HTML entities
-      item_attributes.get_array('Author')    # ['Author 1', 'Author 2', ...]
-      item_attributes.get('Author')          # 'Author 1'
+      puts item_attributes = item.get_element('ItemAttributes')
+      p item_attributes.get('Title')
+      p item_attributes.get('Author')
+      p item_attributes.get('ISBN')
 
       # Return a hash object with the element names as the keys
-      item.get_hash('SmallImage') # {:url => ..., :width => ..., :height => ...}
+      p item.get_hash('SmallImage') # {:url => ..., :width => ..., :height => ...}
 
-      # Return the first matching path
-      item_height = item.get_element('ItemDimensions/Height')
-      item_height.attributes['Units']        # 'hundredths-inches'
-
-      # There are two ways to find elements:
-      # 1) return an array of Amazon::Element
-      reviews = item.get_elements('EditorialReview')
-      reviews.each do |review|
-        el.get('Content')
-      end
-
-      # 2) return Nokogiri::XML::NodeSet object or nil if not found
-      reviews = item/'EditorialReview'
-      reviews.each do |review|
-        el = Amazon::Element.new(review)
-        el.get('Content')
-      end
+      break
     end
-
-    p res
     @book
   end
 
