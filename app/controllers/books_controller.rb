@@ -1,4 +1,5 @@
 class BooksController < ApplicationController
+
   before_action :set_book, only: [:show, :edit, :update, :destroy]
 
   # GET /books
@@ -10,6 +11,52 @@ class BooksController < ApplicationController
   # GET /books/1
   # GET /books/1.json
   def show
+    require 'amazon/ecs'
+    Amazon::Ecs.configure do |options|
+      options[:AWS_access_key_id] = 'AKIAIMN7UR4W3SWPA6YQ'
+      options[:AWS_secret_key] = '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'
+      options[:associate_tag] = 'brahman-20'
+    end
+    res = Amazon::Ecs.item_search(@book.title, {:response_group => 'Medium', :sort => 'salesrank'})
+
+    # Find elements matching 'Item' in response object
+    res.items.each do |item|
+      # Retrieve string value using XML path
+      item.get('ASIN')
+      item.get('ItemAttributes/Title')
+
+      # Return Amazon::Element instance
+      item_attributes = item.get_element('ItemAttributes')
+      item_attributes.get('Title')
+
+      item_attributes.get_unescaped('Title') # unescape HTML entities
+      item_attributes.get_array('Author')    # ['Author 1', 'Author 2', ...]
+      item_attributes.get('Author')          # 'Author 1'
+
+      # Return a hash object with the element names as the keys
+      item.get_hash('SmallImage') # {:url => ..., :width => ..., :height => ...}
+
+      # Return the first matching path
+      item_height = item.get_element('ItemDimensions/Height')
+      item_height.attributes['Units']        # 'hundredths-inches'
+
+      # There are two ways to find elements:
+      # 1) return an array of Amazon::Element
+      reviews = item.get_elements('EditorialReview')
+      reviews.each do |review|
+        el.get('Content')
+      end
+
+      # 2) return Nokogiri::XML::NodeSet object or nil if not found
+      reviews = item/'EditorialReview'
+      reviews.each do |review|
+        el = Amazon::Element.new(review)
+        el.get('Content')
+      end
+    end
+
+    p res
+    @book
   end
 
   # GET /books/new

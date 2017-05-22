@@ -40,6 +40,9 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
+    amazon-ecs (2.5.0)
+      nokogiri (~> 1.4)
+      ruby-hmac (~> 0.3)
     arel (8.0.0)
     ast (2.3.0)
     autoprefixer-rails (7.0.1)
@@ -142,6 +145,7 @@ GEM
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-debug-ide (0.6.0)
       rake (>= 0.8.1)
+    ruby-hmac (0.4.0)
     ruby-progressbar (1.8.1)
     ruby_dep (1.5.0)
     rubyzip (1.2.1)
@@ -196,6 +200,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  amazon-ecs
   bootstrap-sass (~> 3.3.6)
   byebug
   capybara (~> 2.13.0)
