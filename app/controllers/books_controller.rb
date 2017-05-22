@@ -13,9 +13,9 @@ class BooksController < ApplicationController
   def show
     require 'amazon/ecs'
     Amazon::Ecs.configure do |options|
-      options[:AWS_access_key_id] = 'AKIAIMN7UR4W3SWPA6YQ'
-      options[:AWS_secret_key] = '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'
-      options[:associate_tag] = 'brahman-20'
+      options[:AWS_access_key_id] = ENV['AWS_ACCESS_KEY_ID']
+      options[:AWS_secret_key] = ENV['AWS_SECRET_ACCESS_KEY']
+      options[:associate_tag] = ENV['ASSOCIATE_TAG']
     end
     res = Amazon::Ecs.item_search(@book.title, {
         :search_index => 'Books',
