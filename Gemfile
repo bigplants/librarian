@@ -33,6 +33,7 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 gem 'bootstrap-sass', '~> 3.3.6'
+gem 'twitter-bootstrap-rails'
 
 # Amazon associates
 gem 'amazon-ecs'
@@ -60,6 +61,8 @@ group :development do
   # For remote debug
   gem 'ruby-debug-ide'
   gem 'debase'
+
+  gem 'bootstrap-generators'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
