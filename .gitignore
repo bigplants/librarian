@@ -27,3 +27,6 @@
 
 # IntelliJ
 .idea
+
+# other
+out/
