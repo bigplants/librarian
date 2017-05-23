@@ -8,14 +8,18 @@
   <dd><%= @book.title %></dd>
   <dt><strong><%= model_class.human_attribute_name(:description) %>:</strong></dt>
   <dd><%= @book.description %></dd>
+</dl>
 
-  <dt><strong>title:</strong></dt>
+<h2>Amazon</h2>
+<dl class="dl-horizontal">
+  <dt><strong>Title:</strong></dt>
   <dd><%= @amazon['title'] %></dd>
-  <dt><strong>author</strong></dt>
+  <dt><strong>Author</strong></dt>
   <dd><%= @amazon['author'] %></dd>
   <img src="<%= @amazon['image']['URL'] %>">
 
 </dl>
+
 
 <%= link_to t('.back', :default => t("helpers.links.back")),
             books_path, :class => 'btn btn-default' %>
