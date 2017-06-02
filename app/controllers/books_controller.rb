@@ -11,32 +11,45 @@ class BooksController < ApplicationController
   # GET /books/1
   # GET /books/1.json
   def show
-    require 'amazon/ecs'
-    Amazon::Ecs.configure do |options|
-      options[:AWS_access_key_id] = ENV['AWS_ACCESS_KEY_ID']
-      options[:AWS_secret_key] = ENV['AWS_SECRET_ACCESS_KEY']
-      options[:associate_tag] = ENV['ASSOCIATE_TAG']
+
+    @amazon = {}
+    @amazon['title'] = ''
+    @amazon['author'] = ''
+    @amazon['isbn'] = ''
+    @amazon['image'] = ''
+
+    begin
+      require 'amazon/ecs'
+      Amazon::Ecs.configure do |options|
+        options[:AWS_access_key_id] = ENV['AWS_ACCESS_KEY_ID']
+        options[:AWS_secret_key] = ENV['AWS_SECRET_ACCESS_KEY']
+        options[:associate_tag] = ENV['ASSOCIATE_TAG']
+      end
+      res = Amazon::Ecs.item_search(@book.title, {
+          :search_index => 'Books',
+          :item_page => 1,
+          :response_group => 'Medium,ItemAttributes,Images',
+          :country => 'jp'
+      })
+
+      # Find elements matching 'Item' in response object
+      res.items.each do |item|
+        puts item_attributes = item.get_element('ItemAttributes')
+        @amazon = {}
+        @amazon['title'] = item_attributes.get('Title')
+        @amazon['author'] = item_attributes.get('Author')
+        @amazon['isbn'] = item_attributes.get('ISBN')
+
+        # Return a hash object with the element names as the keys
+        @amazon['image'] = item.get_hash('SmallImage') # {:url => ..., :width => ..., :height => ...}
+
+        break
+      end
+
+    rescue
+      flash[:notice] = 'Amazonからデータの取得に失敗しました。もうちょい待ってからリトライしてください。'
     end
-    res = Amazon::Ecs.item_search(@book.title, {
-        :search_index => 'Books',
-        :item_page => 1,
-        :response_group => 'Medium,ItemAttributes,Images',
-        :country => 'jp'
-    })
 
-    # Find elements matching 'Item' in response object
-    res.items.each do |item|
-      puts item_attributes = item.get_element('ItemAttributes')
-      @amazon = {}
-      @amazon['title'] = item_attributes.get('Title')
-      @amazon['author'] = item_attributes.get('Author')
-      @amazon['isbn'] = item_attributes.get('ISBN')
-
-      # Return a hash object with the element names as the keys
-      @amazon['image'] = item.get_hash('SmallImage') # {:url => ..., :width => ..., :height => ...}
-
-      break
-    end
   end
 
   # GET /books/new
