@@ -13,3 +13,8 @@
  */
 @import "bootstrap-sprockets";
 @import "bootstrap-custom";
+
+// for only alert on top.
+div.container > div.alert {
+  margin-top: 60px;
+}

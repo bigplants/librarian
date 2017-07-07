@@ -47,7 +47,7 @@ class BooksController < ApplicationController
       end
 
     rescue
-      flash[:notice] = 'Amazonからデータの取得に失敗しました。もうちょい待ってからリトライしてください。'
+      flash.now[:error] = 'Amazonからデータの取得に失敗しました。もうちょい待ってからリトライしてください。'
     end
 
   end
